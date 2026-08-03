@@ -1,7 +1,9 @@
+--------------------------------------------------------------------------------------------------------------
+# I have created a class name transformations which dynamically used across all
+# the tables for transformations
 
-I have created a class name transformations wich dynamically used for all
-the tables for transformations
-
+# Created functions : dedup, process_timestamp, upsert
+--------------------------------------------------------------------------------------------------------------
 
 
 from typing import List
@@ -15,7 +17,7 @@ from pyspark.sql.window import Window
 class transformationss:
          
     
-
+ # CREATED FUNCTION NAME DEDUP TO REMOVE DUPLICATES
     def dedup(self, df:DataFrame, dedup_cols:List, cdc:str):
         df = df.withColumn("dedupKey", concat(*dedup_cols))
         df = df.withColumn("dedupCounts", row_number().over(Window.partitionBy("dedupKey").orderBy(cdc)))
