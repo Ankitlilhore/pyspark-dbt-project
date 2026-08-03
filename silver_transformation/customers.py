@@ -1,5 +1,10 @@
 
 
+# Applied transformation on customer table
+# Applied some built-in functions like split, regexpr_replace, concat_ws
+# created some user define functions: dedup, process_timestamp, upsert
+# Used transformations class to import the defined methods
+
 from pyspark.sql.functions import *
 
 df = spark.read.table("pyspark_dbt.bronze.customers")
