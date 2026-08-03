@@ -1,1 +1,36 @@
 
+from typing import List
+from pyspark.sql.functions import col, concat, row_number, current_timestamp
+from pyspark.sql import DataFrame
+from delta.tables import DeltaTable
+
+from pyspark.sql.window import Window 
+
+
+class transformationss:
+         
+    
+
+    def dedup(self, df:DataFrame, dedup_cols:List, cdc:str):
+        df = df.withColumn("dedupKey", concat(*dedup_cols))
+        df = df.withColumn("dedupCounts", row_number().over(Window.partitionBy("dedupKey").orderBy(cdc)))
+        df = df.where(col("dedupCounts") == 1)
+        df = df.drop("dedupKey", "dedupCounts")
+
+        return df
+    
+
+    def process_timestamp(self, df:DataFrame):
+        df = df.withColumn("last_updated_timestamp", current_timestamp())
+
+        return df
+
+    def upsert(self, df:DataFrame, key_cols, table, cdc):
+          merge_condition = ' AND '.join([f"tgr.{i} = src.{i}" for i in key_cols])
+          delta_obj = DeltaTable.forName(spark, f"pyspark_dbt.silver.{table}")
+          delta_obj.alias("tgr").merge(df.alias("src"), merge_condition)\
+                                .whenMatchedUpdateAll(condition= f"src.{cdc} >= tgr.{cdc}")\
+                                .whenNotMatchedInsertAll()\
+                                .execute()
+          return 1
+          
