@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------
-# Created scripts for dynamically ingest data from all the tables
+# Created scripts to dynamically ingest data from all tables
 #---------------------------------------------------------------------------------
 
 entities = ['customers', 'trips', 'locations', 'payments', 'drivers', 'vehicles']
