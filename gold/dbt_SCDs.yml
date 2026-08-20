@@ -1,5 +1,6 @@
 -- I have used snapshots in dbt to load all table in gold layer
 -- This tables are ready for analysis
+-- Here I have created dimension tables
 
 
 
